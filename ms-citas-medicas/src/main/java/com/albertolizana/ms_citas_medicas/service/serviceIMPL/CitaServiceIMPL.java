@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import com.albertolizana.ms_citas_medicas.dto.CitaResponseDTO;
 import com.albertolizana.ms_citas_medicas.dto.CrearReservaCitaRequestDTO;
 import com.albertolizana.ms_citas_medicas.dto.CrearReservaCitaResponseDTO;
+import com.albertolizana.ms_citas_medicas.dto.EspecialidadResponseDTO;
 import com.albertolizana.ms_citas_medicas.dto.EstadoCitaResponseDTO;
 import com.albertolizana.ms_citas_medicas.dto.HorarioMedicoResponseDTO;
+import com.albertolizana.ms_citas_medicas.dto.MedicoResponseDTO;
 import com.albertolizana.ms_citas_medicas.dto.PacienteResponseDTO;
 import com.albertolizana.ms_citas_medicas.dto.SlotHorarioResponseDTO;
 import com.albertolizana.ms_citas_medicas.exception.ResourceNotFoundException;
@@ -50,6 +52,22 @@ public class CitaServiceIMPL implements CitaService {
                             .builder().idCita(p.getIdCita())
                             .idSlot(p.getSlotHorario().getIdSlotHorario())
                             
+                            .slotHorario(SlotHorarioResponseDTO
+                                .builder()
+                                .horaInicio(p.getSlotHorario().getHoraInicio())
+                                .horaFin(p.getSlotHorario().getHoraFin())
+                                    .horarioMedico(HorarioMedicoResponseDTO.builder()
+                                    .medico(MedicoResponseDTO
+                                        .builder()
+                                        .nombre(p.getSlotHorario().getHorarioMedico().getMedico().getNombre())
+                                            .especialidad(EspecialidadResponseDTO
+                                                .builder()
+                                                .nombreEspecialidad(p.getSlotHorario().getHorarioMedico().getMedico().getEspecialidad().getNombre())
+                                                .build())
+                                        .build())
+                                .build())
+                            .build())
+                            
                             .estadoCita(EstadoCitaResponseDTO
                                 .builder()
                                 .idEstadoCita(p.getEstadoCita().getIdEstadoCita())
@@ -74,6 +92,22 @@ public class CitaServiceIMPL implements CitaService {
                             .builder().idCita(p.getIdCita())
                             .idSlot(p.getSlotHorario().getIdSlotHorario())
                             
+                            .slotHorario(SlotHorarioResponseDTO
+                                .builder()
+                                .horaInicio(p.getSlotHorario().getHoraInicio())
+                                .horaFin(p.getSlotHorario().getHoraFin())
+                                    .horarioMedico(HorarioMedicoResponseDTO.builder()
+                                    .medico(MedicoResponseDTO
+                                        .builder()
+                                        .nombre(p.getSlotHorario().getHorarioMedico().getMedico().getNombre())
+                                            .especialidad(EspecialidadResponseDTO
+                                                .builder()
+                                                .nombreEspecialidad(p.getSlotHorario().getHorarioMedico().getMedico().getEspecialidad().getNombre())
+                                                .build())
+                                        .build())
+                                .build())
+                            .build())
+
                             .estadoCita(EstadoCitaResponseDTO
                                 .builder()
                                 .idEstadoCita(p.getEstadoCita().getIdEstadoCita())
@@ -100,6 +134,22 @@ public class CitaServiceIMPL implements CitaService {
                         .map(p -> CitaResponseDTO
                             .builder().idCita(p.getIdCita())
                             .idSlot(p.getSlotHorario().getIdSlotHorario())
+
+                            .slotHorario(SlotHorarioResponseDTO
+                                .builder()
+                                .horaInicio(p.getSlotHorario().getHoraInicio())
+                                .horaFin(p.getSlotHorario().getHoraFin())
+                                    .horarioMedico(HorarioMedicoResponseDTO.builder()
+                                    .medico(MedicoResponseDTO
+                                        .builder()
+                                        .nombre(p.getSlotHorario().getHorarioMedico().getMedico().getNombre())
+                                            .especialidad(EspecialidadResponseDTO
+                                                .builder()
+                                                .nombreEspecialidad(p.getSlotHorario().getHorarioMedico().getMedico().getEspecialidad().getNombre())
+                                                .build())
+                                        .build())
+                                .build())
+                            .build())
                             
                             .estadoCita(EstadoCitaResponseDTO
                                 .builder()
@@ -163,6 +213,15 @@ public class CitaServiceIMPL implements CitaService {
                                         .build();
     }
 
+    @Override
+    public void borrarCita(Long id) {
+        Cita cita = citaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Cita con id " + id + " no encontrada"));
+        
+        cita.getSlotHorario().setCita(null);
+        citaRepository.delete(cita);
+    }
+
     public SlotHorario obtenerSlotPorId(Long id){
         return slotHorarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Slot con id " + id + " no encontrado"));
@@ -172,5 +231,5 @@ public class CitaServiceIMPL implements CitaService {
     public Paciente obtenerPacientePorId(Long id){
         return pacienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente con id " + id + " no encontrado"));
-    }    
+    }
 }

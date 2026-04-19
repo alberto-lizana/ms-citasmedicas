@@ -31,4 +31,9 @@ public class SlotHorarioController {
     public ResponseEntity<SlotHorarioResponseDTO> getSlot(@PathVariable Long id){
         return ResponseEntity.ok(slotHorarioService.getSlot(id));
     }
+
+    @GetMapping("/all/{disponible}")
+    public ResponseEntity<List<SlotHorarioResponseDTO>> getAllSlotsByEstado(@PathVariable boolean disponible){
+        return ResponseEntity.ok(slotHorarioService.getAllSlotsByCita(disponible));
+    }
 }

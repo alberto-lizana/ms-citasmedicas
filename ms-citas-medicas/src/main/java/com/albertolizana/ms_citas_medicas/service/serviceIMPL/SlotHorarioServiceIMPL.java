@@ -157,5 +157,95 @@ public class SlotHorarioServiceIMPL implements SlotHorarioService {
             horaActual = horaFin;
         }
     }
+
+    @Override
+    public List<SlotHorarioResponseDTO> getAllSlotsByCita(boolean disponible) {
+        if (disponible){
+            return slotHorarioRepository.findByCitaIsNull()
+                                    .stream()
+                                    .map(p -> SlotHorarioResponseDTO
+                                            .builder()
+                                            .idSlotHorario(p.getIdSlotHorario())
+                                            .horaInicio(p.getHoraInicio())
+                                            .horaFin(p.getHoraFin())
+
+                                            .cita(p.getCita() != null ? CitaResponseDTO
+                                                .builder()
+                                                .idCita(p.getCita().getIdCita())
+                                                .idSlot(p.getIdSlotHorario())
+
+                                                .estadoCita(p.getCita().getEstadoCita() != null ? EstadoCitaResponseDTO
+                                                    .builder()
+                                                    .nombre(p.getCita().getEstadoCita().getNombre())
+                                                    .build() : null)
+
+                                                .paciente(p.getCita().getPaciente() != null ? PacienteResponseDTO
+                                                    .builder()
+                                                    .nombre(p.getCita().getPaciente().getNombre())
+                                                    .email(p.getCita().getPaciente().getEmail())
+                                                    .estado(p.getCita().getPaciente().getEstado())
+                                                    .build() : null)  
+                                                .build() : null)
+                                            
+                                                .horarioMedico(HorarioMedicoResponseDTO
+                                                .builder()
+                                                .fecha(p.getHorarioMedico().getFecha())
+                                                
+                                            .medico(MedicoResponseDTO
+                                                .builder()
+                                                .nombre(p.getHorarioMedico().getMedico().getNombre())
+                                                    .
+                                                especialidad(EspecialidadResponseDTO
+                                                    .builder()
+                                                    .nombreEspecialidad(p.getHorarioMedico().getMedico().getEspecialidad().getNombre())
+                                                    .build())
+                                                .build())
+                                            .build())
+                                        .build())
+                                    .toList();
+        } else { return slotHorarioRepository.findByCitaIsNotNull()
+                                        .stream()
+                                        .map(p -> SlotHorarioResponseDTO
+                                                .builder()
+                                                .idSlotHorario(p.getIdSlotHorario())
+                                                .horaInicio(p.getHoraInicio())
+                                                .horaFin(p.getHoraFin())
+
+                                                .cita(p.getCita() != null ? CitaResponseDTO
+                                                    .builder()
+                                                    .idCita(p.getCita().getIdCita())
+                                                    .idSlot(p.getIdSlotHorario())
+
+                                                    .estadoCita(p.getCita().getEstadoCita() != null ? EstadoCitaResponseDTO
+                                                        .builder()
+                                                        .nombre(p.getCita().getEstadoCita().getNombre())
+                                                        .build() : null)
+
+                                                    .paciente(p.getCita().getPaciente() != null ? PacienteResponseDTO
+                                                        .builder()
+                                                        .nombre(p.getCita().getPaciente().getNombre())
+                                                        .email(p.getCita().getPaciente().getEmail())
+                                                        .estado(p.getCita().getPaciente().getEstado())
+                                                        .build() : null)  
+                                                    .build() : null)
+                                                
+                                                    .horarioMedico(HorarioMedicoResponseDTO
+                                                    .builder()
+                                                    .fecha(p.getHorarioMedico().getFecha())
+                                                    
+                                                .medico(MedicoResponseDTO
+                                                    .builder()
+                                                    .nombre(p.getHorarioMedico().getMedico().getNombre())
+                                                        .
+                                                    especialidad(EspecialidadResponseDTO
+                                                        .builder()
+                                                        .nombreEspecialidad(p.getHorarioMedico().getMedico().getEspecialidad().getNombre())
+                                                        .build())
+                                                    .build())
+                                                .build())
+                                            .build())
+                                        .toList();
+        }
+    }
 }
 

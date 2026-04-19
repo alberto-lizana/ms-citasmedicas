@@ -18,6 +18,7 @@ public class CitaResponseDTO {
 
     private Long idCita;
     private Long idSlot;
+    private SlotHorarioResponseDTO slotHorario;
     private EstadoCitaResponseDTO estadoCita;
     private PacienteResponseDTO paciente; 
 

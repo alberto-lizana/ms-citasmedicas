@@ -12,4 +12,5 @@ public interface CitaService {
     public CitaResponseDTO getCita(Long id);
     public List<CitaResponseDTO> getCitasPorEstado(String nombre);
     public CrearReservaCitaResponseDTO crearReservaCita(CrearReservaCitaRequestDTO dto);
+    public void borrarCita(Long id);
 }

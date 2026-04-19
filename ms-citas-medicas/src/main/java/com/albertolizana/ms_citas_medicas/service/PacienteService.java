@@ -8,6 +8,7 @@ public interface PacienteService {
 
     public List<PacienteResponseDTO> getAllPacientes();
     public PacienteResponseDTO getPaciente(Long id);
+    public List<PacienteResponseDTO> getPacientesPorEstado(boolean estado);
     public void borrarPacienteFisico(Long id);
     public void borrarPacienteLogico(Long id);
 }

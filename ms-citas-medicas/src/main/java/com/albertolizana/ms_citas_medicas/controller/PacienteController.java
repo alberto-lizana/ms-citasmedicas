@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.albertolizana.ms_citas_medicas.dto.PacienteResponseDTO;
 import com.albertolizana.ms_citas_medicas.service.PacienteService;
 
+
 @RestController
 @RequestMapping("/paciente")
 public class PacienteController {
@@ -31,6 +32,11 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> getPaciente(@PathVariable Long id){
         return ResponseEntity.ok(pacienteService.getPaciente(id));
+    }
+
+    @GetMapping("/all/{estado}")
+    public ResponseEntity<List<PacienteResponseDTO>> getAllPacientes(@PathVariable boolean estado){
+        return ResponseEntity.ok(pacienteService.getPacientesPorEstado(estado));
     }
 
     @DeleteMapping("/fisico/{id}")

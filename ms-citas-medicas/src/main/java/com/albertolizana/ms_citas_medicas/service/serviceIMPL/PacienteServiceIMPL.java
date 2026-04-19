@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.albertolizana.ms_citas_medicas.dto.PacienteResponseDTO;
 import com.albertolizana.ms_citas_medicas.exception.ResourceNotFoundException;
+import com.albertolizana.ms_citas_medicas.model.Paciente;
 import com.albertolizana.ms_citas_medicas.repository.PacienteRepository;
 import com.albertolizana.ms_citas_medicas.service.PacienteService;
 
@@ -46,17 +47,37 @@ public class PacienteServiceIMPL implements PacienteService {
     }
 
     @Override
+    public List<PacienteResponseDTO> getPacientesPorEstado(boolean estado){
+        return pacienteRepository.findByEstado(estado)
+                            .stream()
+                            .map(p -> PacienteResponseDTO
+                                .builder()
+                                .idPaciente(p.getIdPaciente())
+                                .nombre(p.getNombre())
+                                .email(p.getEmail())
+                                .estado(p.getEstado())
+                                .build())
+                            .toList();
+    }
+
+
+    @Override
     public void borrarPacienteFisico(Long id) {
         if (!pacienteRepository.existsById(id)) {
             throw new ResourceNotFoundException("Paciente con id " + id + " no encontrado");
         }
         pacienteRepository.deleteById(id);
     }
+
+
     @Override
-    public void borrarPacienteLogico(Long id)  {
-        pacienteRepository.findById(id)
-                    .ifPresent(paciente -> {paciente.setEstado(false);    
-                    pacienteRepository.save(paciente);
-                });
+    public void borrarPacienteLogico(Long id) {
+        Paciente paciente = pacienteRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Paciente con id " + id + " no encontrado"));
+        
+        paciente.setEstado(false);
+        pacienteRepository.save(paciente);
     }   
+    
+    
 }

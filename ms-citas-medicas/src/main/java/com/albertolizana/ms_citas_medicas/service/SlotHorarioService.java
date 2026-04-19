@@ -10,4 +10,5 @@ public interface SlotHorarioService {
     public List<SlotHorarioResponseDTO> getAllSlots();
     public SlotHorarioResponseDTO getSlot(Long id);
     public void generarSlotsParaHorario(HorarioMedico h);
+    public List<SlotHorarioResponseDTO> getAllSlotsByCita(boolean disponible);
 }
