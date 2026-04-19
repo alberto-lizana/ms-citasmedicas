@@ -9,8 +9,10 @@ import com.albertolizana.ms_citas_medicas.exception.ResourceNotFoundException;
 import com.albertolizana.ms_citas_medicas.model.Paciente;
 import com.albertolizana.ms_citas_medicas.repository.PacienteRepository;
 import com.albertolizana.ms_citas_medicas.service.PacienteService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PacienteServiceIMPL implements PacienteService {
 
     private final PacienteRepository pacienteRepository;

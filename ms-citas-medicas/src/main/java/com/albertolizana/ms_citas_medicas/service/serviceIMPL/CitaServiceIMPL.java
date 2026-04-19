@@ -23,7 +23,7 @@ import com.albertolizana.ms_citas_medicas.repository.PacienteRepository;
 import com.albertolizana.ms_citas_medicas.repository.SlotHorarioRepository;
 import com.albertolizana.ms_citas_medicas.service.CitaService;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional

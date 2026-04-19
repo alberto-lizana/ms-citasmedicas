@@ -18,7 +18,7 @@ import com.albertolizana.ms_citas_medicas.model.SlotHorario;
 import com.albertolizana.ms_citas_medicas.repository.SlotHorarioRepository;
 import com.albertolizana.ms_citas_medicas.service.SlotHorarioService;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -126,20 +126,25 @@ public class SlotHorarioServiceIMPL implements SlotHorarioService {
 
     @Override
     public void generarSlotsParaHorario(HorarioMedico h) {
-
+        // verificamos si ya existen slots para el HorarioMedico enviado
         if (slotHorarioRepository.existsByHorarioMedico(h)) {
             return;
         }
 
+        // Obtenemos la duración de una atención.
         int duracion = h.getPlantillaHorario().getDuracionMinutos();
 
+        // Obtenemos la hora de entreda y de salida de la jornada laboral
         LocalTime inicio = h.getPlantillaHorario().getTipoHorario().getHoraInicio();
         LocalTime fin = h.getPlantillaHorario().getTipoHorario().getHoraFin();
 
+
         LocalTime horaActual = inicio;
 
+        // Mientras la hora de inicio (actual) sea menor que la hora fin continuará
         while (horaActual.isBefore(fin)) {
 
+            // Se agrega la duración para crear los slots posteriormente.
             LocalTime horaFin = horaActual.plusMinutes(duracion);
 
             if (horaFin.isAfter(fin)) {
@@ -154,6 +159,7 @@ public class SlotHorarioServiceIMPL implements SlotHorarioService {
 
             slotHorarioRepository.save(slot);
 
+            // Al crear un nuevo slot tenemos que partir desde ese inicio.
             horaActual = horaFin;
         }
     }

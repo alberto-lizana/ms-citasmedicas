@@ -20,7 +20,7 @@ import com.albertolizana.ms_citas_medicas.repository.PlantillaHorarioRepository;
 import com.albertolizana.ms_citas_medicas.service.HorarioMedicoService;
 import com.albertolizana.ms_citas_medicas.service.SlotHorarioService;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -103,24 +103,27 @@ public class HorarioMedicoServiceIMPL implements HorarioMedicoService {
    
     @Override
     public void crearHorarios(CrearHorariosRequestDTO dto) {
-
+        // Se valida que fecha fin sea mayor a fecha inicio
         if (dto.getFechaFin().isBefore(dto.getFechaInicio()) || dto.getFechaFin().isEqual(dto.getFechaInicio())) {
             throw new RuntimeException("La fecha de fin debe ser posterior a la fecha de inicio");
         }
-
+        // Obtenemos Todos Los medicos
         List<Medico> medicos = medicoRepository.findAll();
+        // Obtenemos Todas Las plantillas
         List<PlantillaHorario> plantillas = plantillaHorarioRepository.findAll();
 
         LocalDate fechaActual = dto.getFechaInicio();
 
+        // Mientras fecha inicio no este después de fecha fin continuará
         while (!fechaActual.isAfter(dto.getFechaFin())) {
 
             int index = 0; 
 
             for (Medico m : medicos) {
-
+                // Obtenemos la plantilla el módulo nos asegura que él índice nunca se salga del rango de la lista.
                 PlantillaHorario p = plantillas.get(index % plantillas.size());
 
+                // Aqui a pesar de tener la constraint volvemos a verifiicar antes de crear el horario-medico
                 if (!horarioMedicoRepository.existsByMedicoAndFechaAndPlantillaHorario(m, fechaActual, p)) {
 
                     HorarioMedico hm = HorarioMedico.builder()
@@ -129,8 +132,8 @@ public class HorarioMedicoServiceIMPL implements HorarioMedicoService {
                                                 .medico(m)
                                                 .build();
 
-                    horarioMedicoRepository.save(hm);
-                    slotHorarioService.generarSlotsParaHorario(hm);
+                    horarioMedicoRepository.save(hm); // Se guarda el horario medico
+                    slotHorarioService.generarSlotsParaHorario(hm); // Mandamos a crear Slots. 
                 }
                 index++;
             }
