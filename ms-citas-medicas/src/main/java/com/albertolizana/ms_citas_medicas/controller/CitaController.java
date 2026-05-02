@@ -2,6 +2,9 @@ package com.albertolizana.ms_citas_medicas.controller;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,12 +34,16 @@ public class CitaController {
 
     @GetMapping("/all")
     public ResponseEntity<List<CitaResponseDTO>> getAllCitas(){
-        return ResponseEntity.ok(citaService.getAllCitas());
+        List<CitaResponseDTO> lc = citaService.getAllCitas();
+        lc.forEach(this::crearLinksCita);
+        return ResponseEntity.ok(lc);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CitaResponseDTO> getCita(@PathVariable Long id){
-        return ResponseEntity.ok(citaService.getCita(id));
+        CitaResponseDTO c = citaService.getCita(id);
+        crearLinksCita(c);
+        return ResponseEntity.ok(c);
     }
 
     @GetMapping("/estado/{nombreEstado}")
@@ -54,5 +61,25 @@ public class CitaController {
     public ResponseEntity<?> borrarCita(@PathVariable Long id){
             citaService.borrarCita(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    private void crearLinksCita(CitaResponseDTO cita){
+        
+        cita.add(linkTo(methodOn(CitaController.class)
+            .getCita(cita.getIdCita()))
+            .withSelfRel());
+        
+        cita.add(linkTo(methodOn(CitaController.class)
+            .getAllCitas()).withRel("collection"));
+        
+        cita.add(linkTo(methodOn(CitaController.class).getCitasPorEstado(cita.getEstadoCita().getNombre())).withRel("cita-estado-collection"));
+
+        cita.add(linkTo(methodOn(CitaController.class)
+            .crearReservaCita(null))
+            .withRel("create"));
+        
+        cita.add(linkTo(methodOn(CitaController.class)
+            .borrarCita(cita.getIdCita())).withRel("delete"));
+
     }
 }

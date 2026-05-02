@@ -2,6 +2,9 @@ package com.albertolizana.ms_citas_medicas.controller;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +26,26 @@ public class PlantillaHorarioController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PlantillaHorarioResponseDTO>> getAllPlantillaHorario(){
-        return ResponseEntity.ok(plantillaHorarioService.getAllPlantillaHorario());
+        List<PlantillaHorarioResponseDTO> lph = plantillaHorarioService.getAllPlantillaHorario();
+        lph.forEach(this::crearLinkPlantillaHorario);
+        return ResponseEntity.ok(lph);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PlantillaHorarioResponseDTO> getPlantillaHorario(@PathVariable Long id){
-        return ResponseEntity.ok(plantillaHorarioService.getPlantillaHorario(id));
-    }    
+        PlantillaHorarioResponseDTO ph = plantillaHorarioService.getPlantillaHorario(id);
+        crearLinkPlantillaHorario(ph);
+        return ResponseEntity.ok(ph);
+    }   
+
+    private void crearLinkPlantillaHorario(PlantillaHorarioResponseDTO plantillaHorario){
+
+        plantillaHorario.add(linkTo(methodOn(PlantillaHorarioController.class)
+                .getPlantillaHorario(plantillaHorario.getIdPlantilla()))
+                .withSelfRel());
+        
+        plantillaHorario.add(linkTo(methodOn(PlantillaHorarioController.class)
+                .getAllPlantillaHorario())
+                .withRel("collection"));
+    }
 }

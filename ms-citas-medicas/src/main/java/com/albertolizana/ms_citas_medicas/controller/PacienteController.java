@@ -2,6 +2,9 @@ package com.albertolizana.ms_citas_medicas.controller;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,17 +29,23 @@ public class PacienteController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PacienteResponseDTO>> getAllPacientes(){
-        return ResponseEntity.ok(pacienteService.getAllPacientes());
+        List<PacienteResponseDTO> lp = pacienteService.getAllPacientes();
+        lp.forEach(t -> crearLinkPaciente(t));
+        return ResponseEntity.ok(lp);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> getPaciente(@PathVariable Long id){
-        return ResponseEntity.ok(pacienteService.getPaciente(id));
+        PacienteResponseDTO p = pacienteService.getPaciente(id);
+        crearLinkPaciente(p);
+        return ResponseEntity.ok(p);
     }
 
     @GetMapping("/all/{estado}")
-    public ResponseEntity<List<PacienteResponseDTO>> getAllPacientes(@PathVariable boolean estado){
-        return ResponseEntity.ok(pacienteService.getPacientesPorEstado(estado));
+    public ResponseEntity<List<PacienteResponseDTO>> getPacientesPorEstado(@PathVariable boolean estado){
+        List<PacienteResponseDTO> lp = pacienteService.getPacientesPorEstado(estado);
+        lp.forEach(t -> crearLinkPaciente(t));        
+        return ResponseEntity.ok(lp);
     }
 
     @DeleteMapping("/fisico/{id}")
@@ -49,5 +58,29 @@ public class PacienteController {
     public ResponseEntity<?> borrarPacientlogico(@PathVariable Long id){
         pacienteService.borrarPacienteLogico(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }    
+    }   
+
+
+    private void crearLinkPaciente(PacienteResponseDTO paciente){
+
+        paciente.add(linkTo(methodOn(PacienteController.class)
+                .getPaciente(paciente.getIdPaciente()))
+                .withSelfRel());
+        
+        paciente.add(linkTo(methodOn(PacienteController.class)
+                .getAllPacientes())
+                .withRel("collection"));
+
+        paciente.add(linkTo(methodOn(PacienteController.class)
+                .getPacientesPorEstado(paciente.getEstado()))
+                .withRel("paciente-estado-collection"));
+        
+        paciente.add(linkTo(methodOn(PacienteController.class)
+                .borrarPacientFisico(paciente.getIdPaciente()))
+                .withRel("delete-fisico"));
+
+        paciente.add(linkTo(methodOn(PacienteController.class)
+                .borrarPacientlogico(paciente.getIdPaciente()))
+                .withRel("delete-logico"));
+    }
 }

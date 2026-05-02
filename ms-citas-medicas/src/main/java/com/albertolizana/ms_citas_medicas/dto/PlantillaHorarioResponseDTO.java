@@ -1,5 +1,7 @@
 package com.albertolizana.ms_citas_medicas.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder
-public class PlantillaHorarioResponseDTO {
+public class PlantillaHorarioResponseDTO extends RepresentationModel<PlantillaHorarioResponseDTO> {
 
     private Long idPlantilla;
     private int duracionMinutosPlantilla;    

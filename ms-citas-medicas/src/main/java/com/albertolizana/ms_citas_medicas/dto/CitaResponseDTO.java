@@ -1,5 +1,7 @@
 package com.albertolizana.ms_citas_medicas.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CitaResponseDTO {
+public class CitaResponseDTO extends RepresentationModel<CitaResponseDTO> {
 
     private Long idCita;
     private Long idSlot;

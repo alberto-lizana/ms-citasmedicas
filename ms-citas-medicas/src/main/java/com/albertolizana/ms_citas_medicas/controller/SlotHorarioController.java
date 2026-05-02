@@ -2,6 +2,9 @@ package com.albertolizana.ms_citas_medicas.controller;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,16 +27,39 @@ public class SlotHorarioController {
 
     @GetMapping("/all")
     public ResponseEntity<List<SlotHorarioResponseDTO>> getAllSlots(){
-        return ResponseEntity.ok(slotHorarioService.getAllSlots());
+        List<SlotHorarioResponseDTO> lsh = slotHorarioService.getAllSlots();
+        lsh.forEach(this::crearLinkSlotHoirario);
+        return ResponseEntity.ok(lsh);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SlotHorarioResponseDTO> getSlot(@PathVariable Long id){
-        return ResponseEntity.ok(slotHorarioService.getSlot(id));
+        SlotHorarioResponseDTO sl = slotHorarioService.getSlot(id);
+        crearLinkSlotHoirario(sl);
+        return ResponseEntity.ok(sl);
     }
 
     @GetMapping("/all/{disponible}")
     public ResponseEntity<List<SlotHorarioResponseDTO>> getAllSlotsByEstado(@PathVariable boolean disponible){
-        return ResponseEntity.ok(slotHorarioService.getAllSlotsByCita(disponible));
+        List<SlotHorarioResponseDTO> lsh = slotHorarioService.getAllSlotsByCita(disponible);
+        lsh.forEach(this::crearLinkSlotHoirario);
+        return ResponseEntity.ok(lsh);
     }
+
+    private void crearLinkSlotHoirario(SlotHorarioResponseDTO slotHorario){
+
+        slotHorario.add(linkTo(methodOn(SlotHorarioController.class)
+                .getSlot(slotHorario.getIdSlotHorario()))
+                .withSelfRel());
+        
+        slotHorario.add(linkTo(methodOn(SlotHorarioController.class)
+                .getAllSlots())
+                .withRel("collection"));
+        
+        slotHorario.add(linkTo(methodOn(SlotHorarioController.class)
+                .getAllSlotsByEstado(true))
+                .withSelfRel());
+
+    }
+
 }

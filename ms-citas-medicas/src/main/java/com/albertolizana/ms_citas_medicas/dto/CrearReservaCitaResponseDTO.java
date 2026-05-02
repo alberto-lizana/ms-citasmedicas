@@ -22,3 +22,7 @@ public class CrearReservaCitaResponseDTO {
     private PacienteResponseDTO paciente; 
 
 }
+
+/*
+extends RepresentationModel<CrearReservaCitaResponseDTO> 
+*/
