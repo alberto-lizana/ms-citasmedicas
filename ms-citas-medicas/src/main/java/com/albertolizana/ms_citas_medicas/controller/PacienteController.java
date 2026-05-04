@@ -4,7 +4,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,13 +73,6 @@ public class PacienteController {
         paciente.add(linkTo(methodOn(PacienteController.class)
                 .getPacientesPorEstado(paciente.getEstado()))
                 .withRel("paciente-estado-collection"));
-        
-        paciente.add(linkTo(methodOn(PacienteController.class)
-                .borrarPacientFisico(paciente.getIdPaciente()))
-                .withRel("delete-fisico"));
 
-        paciente.add(linkTo(methodOn(PacienteController.class)
-                .borrarPacientlogico(paciente.getIdPaciente()))
-                .withRel("delete-logico"));
     }
 }

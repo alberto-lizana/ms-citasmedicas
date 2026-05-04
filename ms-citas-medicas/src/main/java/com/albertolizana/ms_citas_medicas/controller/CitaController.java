@@ -4,7 +4,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,14 +71,8 @@ public class CitaController {
         cita.add(linkTo(methodOn(CitaController.class)
             .getAllCitas()).withRel("collection"));
         
-        cita.add(linkTo(methodOn(CitaController.class).getCitasPorEstado(cita.getEstadoCita().getNombre())).withRel("cita-estado-collection"));
-
         cita.add(linkTo(methodOn(CitaController.class)
-            .crearReservaCita(null))
-            .withRel("create"));
-        
-        cita.add(linkTo(methodOn(CitaController.class)
-            .borrarCita(cita.getIdCita())).withRel("delete"));
+            .getCitasPorEstado(cita.getEstadoCita().getNombre())).withRel("cita-estado-collection"));
 
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,8 +58,5 @@ public class HorarioMedicoController {
         horarioMedico.add(linkTo(methodOn(HorarioMedicoController.class)
                 .getAllHorariosMedico())
                 .withRel("collection"));
-        
-        horarioMedico.add(linkTo(methodOn(HorarioMedicoController.class)
-                .crearHorarios(null)).withRel("create-horarios"));
     }
 }
